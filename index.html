@@ -6,44 +6,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+        body{
+            margin: 0;
+            width: 1920px;
+        }
+
         :root {
-            --grid-cols: 1;
             --grid-rows: 1;
+            --grid-cols: 1;
         }
 
         #container{
             display: grid;
-            grid-gap: 5px;
             grid-template-rows: repeat(var(--grid-rows), 1fr);
             grid-template-columns: repeat(var(--grid-cols), 1fr);
         }
 
         .grid-item {
-            padding: 1em;
-            border: 1px solid #ddd;
+            /* padding: 1em; */
+            /* padding: 1px; */
+            /* width: 20px;
+            height: 4px; */
+            border: 1px solid black;
             text-align: center;
         }
+
         .grid-item:hover{
             background-color: red;
+        }
+
+        button{
+            margin: 0;
         }
     </style>
 </head>
 <body>
+    <button id="button">Click Me!</button><br>
     <div id="container"></div>
     <script>
         const container = document.getElementById("container");
 
-        function createRows(rows, columns) {
+        let button = document.getElementById("button");
+
+        
+        function createSquare(rows) {
             container.style.setProperty('--grid-rows', rows);
-            container.style.setProperty('--grid-cols', columns);
-            for(let i=0; i<(rows*columns); i++) {
+            container.style.setProperty('--grid-cols', rows);
+            for(let i=0; i<(rows*rows); i++) {
                 let cell = document.createElement("div");
                 cell.innerHTML = (i + 1);
                 container.appendChild(cell).className = "grid-item";
             }
         }
-
-        createRows(16, 16);
+        
+        function defaultGrid(x){
+            createSquare(x);
+        }
+        defaultGrid(16);
+        
+        button.addEventListener("click", ()=>{
+            let numberOfRows = parseInt(prompt("Enter a number of rows", "16"));
+            while(numberOfRows > 100){
+                numberOfRows = parseInt(prompt("Enter a number of rows", "16"));
+            }
+           
+            container.innerHTML = "";
+            createSquare(numberOfRows);
+        });
+        
+        // function createSquare(rows){
+        //     for(let i=0; i<rows; i++){
+        //         let row = document.createElement("div");
+        //         container.appendChild(row).className = "grid-row";
+        //     }
+        //     for(let j=0; j<rows; j++){
+        //         for(let k=0; k<)
+        //     }
+        // }
+        // createSquare(16);
         
     </script>
 </body>
