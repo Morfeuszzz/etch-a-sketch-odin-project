@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        :root {
+            --grid-cols: 1;
+            --grid-rows: 1;
+        }
+
+        #container{
+            display: grid;
+            grid-gap: 5px;
+            grid-template-rows: repeat(var(--grid-rows), 1fr);
+            grid-template-columns: repeat(var(--grid-cols), 1fr);
+        }
+
+        .grid-item {
+            padding: 1em;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .grid-item:hover{
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    <script>
+        const container = document.getElementById("container");
+
+        function createRows(rows, columns) {
+            container.style.setProperty('--grid-rows', rows);
+            container.style.setProperty('--grid-cols', columns);
+            for(let i=0; i<(rows*columns); i++) {
+                let cell = document.createElement("div");
+                cell.innerHTML = (i + 1);
+                container.appendChild(cell).className = "grid-item";
+            }
+        }
+
+        createRows(16, 16);
+        
+    </script>
+</body>
+</html>
