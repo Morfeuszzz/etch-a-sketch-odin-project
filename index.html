@@ -8,7 +8,6 @@
     <style>
         body{
             margin: 0;
-            width: 1920px;
         }
 
         :root{
@@ -24,12 +23,7 @@
 
         .grid-item {
             user-select: none;
-            /* padding: 1em; */
-            /* padding: 1px; */
-            /* width: 20px; */
-            /* height: 4px; */
-            /* border: 1px solid black; */
-            /* text-align: center; */
+            background-color: var(--primary-light);
         }
 
         .grid-item:hover{
@@ -48,26 +42,35 @@
 
     <main>
         <div class="settings">
+            <button id="colorBtn">Color Mode</button>
             <button id="eraserBtn">Eraser</button>
             <button id="clearBtn">Clear</button>
-            <input type="range" name="" id="sizeSlider" min="1" max="100">
+            <p id="showSize">16 x 16</p>
+            <input type="range" name="" id="sizeSlider" value="16" min="1" max="100">
         </div>
         <div id="grid"></div>
     </main>
 
     <footer>
-        <p>Copyright &copy; 2022<p>
+        <p>Copyright &copy; <script>document.write(new Date().getFullYear())</script> Morfeuszzz<p>
         <a href="https://github.com/Morfeuszzz" target="_blank">Github</a>
     </footer>
 
     <script>
         const grid = document.getElementById("grid");
         const defaultSquaresPerSide = 16;
+        const sizeSlider = document.getElementById("sizeSlider");
 
         let squaresPerSide = defaultSquaresPerSide;
+        let colorBtn = document.getElementById("colorBtn");
         let eraserBtn = document.getElementById("eraserBtn");
         let clearBtn = document.getElementById("clearBtn");
         
+        let cells = document.querySelectorAll(".grid-item");
+        cells.onmouseover = () => {
+            cells.style.backgroundColor = "red";
+        }
+
         clearBtn.addEventListener("click", ()=>{
             clearGrid();
         });
@@ -77,29 +80,40 @@
             createSquare(defaultSquaresPerSide);
         }
 
-        // wybieranie ile kratek za pomoca input range
-        
-        function changeGridSize() {
-            clearGrid();
+        sizeSlider.onmousemove = (e) => {
+            showSize(e.target.value);
         }
 
-        createSquare(40);
+        sizeSlider.onchange = (e) => {
+           changeGridSize(e.target.value);
+        }
+
+        function showSize(value) {
+            document.getElementById("showSize").innerHTML = `${value} x ${value}`;
+        }
+
+        function changeGridSize(squaresPerSide) {
+            clearGrid();
+            createSquare(squaresPerSide);
+        }
 
         function createSquare(squaresPerSide) {
             grid.style.gridTemplateRows = `repeat(${squaresPerSide}, 1fr)`;
             grid.style.gridTemplateColumns = `repeat(${squaresPerSide}, 1fr)`;
 
-            // grid.style.setProperty('--grid-rows', squaresPerSide);
-            // grid.style.setProperty('--grid-cols', squaresPerSide);
-
-            for(let i=0; i<(squaresPerSide*squaresPerSide); i++) {
-                let cell = document.createElement("div");
+            for(let i = 0; i < (squaresPerSide*squaresPerSide); i++) {
+                const cell = document.createElement("div");
                 cell.classList.add("grid-item");
+                cell.addEventListener("mouseover", changeColor);
                 grid.appendChild(cell);
             }
         }
         
-        // window.onload = createSquare(defaultSquaresPerSide);
+        function changeColor(e) {
+            e.target.style.backgroundColor = "red";
+        }
+
+        window.onload = createSquare(defaultSquaresPerSide);
         
     </script>
 </body>
