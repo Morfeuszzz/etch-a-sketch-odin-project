@@ -4,31 +4,32 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Etch-a-sketch</title>
     <style>
         body{
             margin: 0;
             width: 1920px;
         }
 
-        :root {
-            --grid-rows: 1;
-            --grid-cols: 1;
+        :root{
+            --primary-light: #fefefe;
         }
 
-        #container{
+        #grid{
             display: grid;
-            grid-template-rows: repeat(var(--grid-rows), 1fr);
-            grid-template-columns: repeat(var(--grid-cols), 1fr);
+            width: 600px;
+            height: 600px;
+            border: 1px solid black;
         }
 
         .grid-item {
+            user-select: none;
             /* padding: 1em; */
             /* padding: 1px; */
-            /* width: 20px;
-            height: 4px; */
-            border: 1px solid black;
-            text-align: center;
+            /* width: 20px; */
+            /* height: 4px; */
+            /* border: 1px solid black; */
+            /* text-align: center; */
         }
 
         .grid-item:hover{
@@ -41,49 +42,64 @@
     </style>
 </head>
 <body>
-    <button id="button">Click Me!</button><br>
-    <div id="container"></div>
+    <header>
+        <h1>Etch-a-sketch</h1>
+    </header>
+
+    <main>
+        <div class="settings">
+            <button id="eraserBtn">Eraser</button>
+            <button id="clearBtn">Clear</button>
+            <input type="range" name="" id="sizeSlider" min="1" max="100">
+        </div>
+        <div id="grid"></div>
+    </main>
+
+    <footer>
+        <p>Copyright &copy; 2022<p>
+        <a href="https://github.com/Morfeuszzz" target="_blank">Github</a>
+    </footer>
+
     <script>
-        const container = document.getElementById("container");
+        const grid = document.getElementById("grid");
+        const defaultSquaresPerSide = 16;
 
-        let button = document.getElementById("button");
-
+        let squaresPerSide = defaultSquaresPerSide;
+        let eraserBtn = document.getElementById("eraserBtn");
+        let clearBtn = document.getElementById("clearBtn");
         
-        function createSquare(rows) {
-            container.style.setProperty('--grid-rows', rows);
-            container.style.setProperty('--grid-cols', rows);
-            for(let i=0; i<(rows*rows); i++) {
-                let cell = document.createElement("div");
-                cell.innerHTML = (i + 1);
-                container.appendChild(cell).className = "grid-item";
-            }
-        }
-        
-        function defaultGrid(x){
-            createSquare(x);
-        }
-        defaultGrid(16);
-        
-        button.addEventListener("click", ()=>{
-            let numberOfRows = parseInt(prompt("Enter a number of rows", "16"));
-            while(numberOfRows > 100){
-                numberOfRows = parseInt(prompt("Enter a number of rows", "16"));
-            }
-           
-            container.innerHTML = "";
-            createSquare(numberOfRows);
+        clearBtn.addEventListener("click", ()=>{
+            clearGrid();
         });
+
+        function clearGrid() {
+            grid.innerHTML = "";
+            createSquare(defaultSquaresPerSide);
+        }
+
+        // wybieranie ile kratek za pomoca input range
         
-        // function createSquare(rows){
-        //     for(let i=0; i<rows; i++){
-        //         let row = document.createElement("div");
-        //         container.appendChild(row).className = "grid-row";
-        //     }
-        //     for(let j=0; j<rows; j++){
-        //         for(let k=0; k<)
-        //     }
-        // }
-        // createSquare(16);
+        function changeGridSize() {
+            clearGrid();
+        }
+
+        createSquare(40);
+
+        function createSquare(squaresPerSide) {
+            grid.style.gridTemplateRows = `repeat(${squaresPerSide}, 1fr)`;
+            grid.style.gridTemplateColumns = `repeat(${squaresPerSide}, 1fr)`;
+
+            // grid.style.setProperty('--grid-rows', squaresPerSide);
+            // grid.style.setProperty('--grid-cols', squaresPerSide);
+
+            for(let i=0; i<(squaresPerSide*squaresPerSide); i++) {
+                let cell = document.createElement("div");
+                cell.classList.add("grid-item");
+                grid.appendChild(cell);
+            }
+        }
+        
+        // window.onload = createSquare(defaultSquaresPerSide);
         
     </script>
 </body>
