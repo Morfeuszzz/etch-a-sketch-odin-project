@@ -4,36 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style.css">
     <title>Etch-a-sketch</title>
-    <style>
-        body{
-            margin: 0;
-        }
-
-        :root{
-            --primary-light: #fefefe;
-        }
-
-        #grid{
-            display: grid;
-            width: 600px;
-            height: 600px;
-            border: 1px solid black;
-        }
-
-        .grid-item {
-            user-select: none;
-            background-color: var(--primary-light);
-        }
-
-        .grid-item:hover{
-            background-color: red;
-        }
-
-        button{
-            margin: 0;
-        }
-    </style>
 </head>
 <body>
     <header>
@@ -43,9 +16,10 @@
     <main>
         <div class="settings">
             <button id="colorBtn">Color Mode</button>
+            <button id="rainbowBtn">Rainbow Mode</button>
             <button id="eraserBtn">Eraser</button>
             <button id="clearBtn">Clear</button>
-            <p id="showSize">16 x 16</p>
+            <div id="showSize">16 x 16</div>
             <input type="range" name="" id="sizeSlider" value="16" min="1" max="100">
         </div>
         <div id="grid"></div>
@@ -53,7 +27,7 @@
 
     <footer>
         <p>Copyright &copy; <script>document.write(new Date().getFullYear())</script> Sebastian Malicki<p>
-        <a href="https://github.com/Morfeuszzz" target="_blank">Github</a>
+        <a href="https://github.com/Morfeuszzz" target="_blank"><i class="fa fa-github" style="font-size:24px"></i></a>
     </footer>
 
     <script>
@@ -63,40 +37,73 @@
 
         let squaresPerSide = defaultSquaresPerSide;
         let colorBtn = document.getElementById("colorBtn");
+        let rainbowBtn = document.getElementById("rainbowBtn");
         let eraserBtn = document.getElementById("eraserBtn");
         let clearBtn = document.getElementById("clearBtn");
-        
         let cells = document.querySelectorAll(".grid-item");
-        cells.onmouseover = () => {
-            cells.style.backgroundColor = "red";
+        let currentMode = "color";
+
+        // function that marks on the page what mode is currently active
+        function activateButton(newMode) {
+            if (currentMode === "rainbow") {
+                rainbowBtn.classList.remove("active");
+            } else if (currentMode === "color") {
+                colorBtn.classList.remove("active");
+            } else if (currentMode === "eraser") {
+                eraserBtn.classList.remove("active");
+            }
+
+            if (newMode === "rainbow") {
+                rainbowBtn.classList.add("active");
+            } else if (newMode === "color") {
+                colorBtn.classList.add("active");
+            } else if (newMode === "eraser") {
+                eraserBtn.classList.add("active");
+            }
         }
 
-        clearBtn.addEventListener("click", ()=>{
-            clearGrid();
-        });
+        let mouseDown = false;
+        document.body.onmousedown = () => (mouseDown = true);
+        document.body.onmouseup = () => (mouseDown = false);
 
-        function clearGrid() {
-            grid.innerHTML = "";
-            createSquare(defaultSquaresPerSide);
+        // function that marks the active mode
+        function setCurrentMode(newMode) {
+            activateButton(newMode);
+            currentMode = newMode;
         }
 
         sizeSlider.onmousemove = (e) => {
             showSize(e.target.value);
         }
-
+        
         sizeSlider.onchange = (e) => {
-           changeGridSize(e.target.value);
+            changeGridSize(e.target.value);
         }
 
+        //clear grid and create new one
+        function clearGrid() {
+            grid.innerHTML = "";
+            createSquare(defaultSquaresPerSide);
+        }
+
+        // show size of grid
         function showSize(value) {
             document.getElementById("showSize").innerHTML = `${value} x ${value}`;
         }
 
+        // function that changes the grid size, first clear grid than create new one
         function changeGridSize(squaresPerSide) {
             clearGrid();
             createSquare(squaresPerSide);
         }
 
+        // add functions to buttons
+        colorBtn.onclick = () => setCurrentMode("color");
+        rainbowBtn.onclick = () => setCurrentMode("rainbow");
+        eraserBtn.onclick = () => setCurrentMode("eraser");
+        clearBtn.onclick = () => clearGrid();
+
+        // function that creates grid
         function createSquare(squaresPerSide) {
             grid.style.gridTemplateRows = `repeat(${squaresPerSide}, 1fr)`;
             grid.style.gridTemplateColumns = `repeat(${squaresPerSide}, 1fr)`;
@@ -105,16 +112,31 @@
                 const cell = document.createElement("div");
                 cell.classList.add("grid-item");
                 cell.addEventListener("mouseover", changeColor);
+                cell.addEventListener("mousedown", changeColor);
                 grid.appendChild(cell);
             }
         }
         
+        // function that changes colors depending on the mode
         function changeColor(e) {
-            e.target.style.backgroundColor = "red";
+            if (e.type === "mouseover" && !mouseDown) return
+            if (currentMode === "rainbow") {
+                const randomR = Math.floor(Math.random() * 256);
+                const randomG = Math.floor(Math.random() * 256);
+                const randomB = Math.floor(Math.random() * 256);
+                e.target.style.backgroundColor = `rgb(${randomR}, ${randomG}, ${randomB})`;
+            } else if (currentMode === "color") {
+                e.target.style.backgroundColor = "black";
+            } else if (currentMode === "eraser") {
+                e.target.style.backgroundColor = "white";
+            }
         }
 
-        window.onload = createSquare(defaultSquaresPerSide);
-        
+        // what is to happen when after the page is loaded
+        window.onload = () => {
+            createSquare(defaultSquaresPerSide);
+            activateButton(currentMode);
+        } 
     </script>
 </body>
 </html>
